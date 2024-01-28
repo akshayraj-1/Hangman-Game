@@ -132,8 +132,6 @@ int main() {
         int attempt = 0;
         int correctGuess = 0;
         getLine(file, word, hint, rand() % WORDS_COUNT + 1);
-
-        printf("Word : %s\n", word);
         
         for (int i = 0; i < strlen(word); i++) {
             guessedWord[i] = '_';
