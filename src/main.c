@@ -10,7 +10,7 @@
 #define MAX_LINE_SIZE 250
 #define MAX_ATTEMPTS 6
 
-int getNumberofWords(FILE *file) {
+int getWordsCount(FILE *file) {
     fseek(file, 0, SEEK_SET);
     int wordsCount = 0;
     char ch;
@@ -33,6 +33,7 @@ void getLine(FILE *file, char *word, char *hint, int line) {
                 size_word++;
                 if (buffer[i + 1] == ',') break;
             }
+            word[size_word + 1] = '\0';
             for (int i = size_word + 2; i < strlen(buffer) - 1; i++) {
                 hint[i - (size_word + 2)] = buffer[i];
             }
@@ -117,7 +118,7 @@ int main() {
     FILE *file = fopen(FILE_NAME, "r");
     int WORDS_COUNT = 0;
 
-    if (file == NULL || (WORDS_COUNT = getNumberofWords(file)) < 1) {
+    if (file == NULL || (WORDS_COUNT = getWordsCount(file)) < 1) {
         perror("Sorry! ");
         if (file != NULL) fclose(file);
         exit(1);
