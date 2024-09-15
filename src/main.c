@@ -19,6 +19,9 @@ int getWordsCount(FILE *file) {
 }
 
 void getLine(FILE *file, char *word, char *hint, int line) {
+    word[0] = '\0';
+    hint[0] = '\0';
+
     fseek(file, 0, SEEK_SET);
     char buffer[MAX_LINE_SIZE];
     int curLine = 0;
@@ -27,16 +30,21 @@ void getLine(FILE *file, char *word, char *hint, int line) {
         fgets(buffer, MAX_LINE_SIZE, file);
         curLine++;
         if (curLine == line) {
-            int size_word = 0;
-            for (int i = 0; i < strlen(buffer); i++) {
+            int i = 0, j = 0;
+            int buffer_size = strlen(buffer);
+
+            while (i < buffer_size && buffer[i] != ',' && buffer[i] != '\n') {
                 word[i] = buffer[i];
-                size_word++;
-                if (buffer[i + 1] == ',') break;
+                i++;
             }
-            word[size_word + 1] = '\0';
-            for (int i = size_word + 2; i < strlen(buffer) - 1; i++) {
-                hint[i - (size_word + 2)] = buffer[i];
+            word[i] = '\0';
+
+            while(j < buffer_size && buffer[j] != '\n') {
+                hint[j] = buffer[++i];
+                j++;
             }
+            hint[j] = '\0';
+
             return;
         }
     } while (!feof(file));
@@ -133,10 +141,12 @@ int main() {
         int attempt = 0;
         int correctGuess = 0;
         getLine(file, word, hint, rand() % WORDS_COUNT + 1);
-        
+
         for (int i = 0; i < strlen(word); i++) {
             guessedWord[i] = '_';
         }
+        guessedWord[strlen(word)] = '\0';
+
         showHangman(attempt);
         printf("Hint : %s\n", hint);
         printf("Guess Word : ");
@@ -145,7 +155,7 @@ int main() {
         while (attempt < MAX_ATTEMPTS) {
             char letter;
             printf("Enter a letter : ");
-            scanf("%c", &letter);
+            scanf(" %c", &letter);
 
             if (checkGuess(letter, guessedWord, word)) {
                 printf("-> Good Guess!\n");
